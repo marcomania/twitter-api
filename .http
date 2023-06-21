@@ -1,0 +1,21 @@
+GET http://localhost:3000 HTTP/1.1
+###
+GET http://localhost:3000/tweets HTTP/1.1
+###
+GET http://localhost:3000/tweets/2 HTTP/1.1
+###
+POST http://localhost:3000/tweets HTTP/1.1
+content-type: application/json
+
+{
+    "message": "Quinto tweet de la noche"
+}
+###
+PATCH http://localhost:3000/tweets/4 HTTP/1.1
+content-type: application/json
+
+{
+    "message": "Casi Segundo tweet de la noche"
+}
+###
+DELETE http://localhost:3000/tweets/3 HTTP/1.1
