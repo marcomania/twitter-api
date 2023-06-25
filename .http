@@ -2,13 +2,19 @@ GET http://localhost:3000 HTTP/1.1
 ###
 GET http://localhost:3000/tweets HTTP/1.1
 ###
-GET http://localhost:3000/tweets/2 HTTP/1.1
+GET http://localhost:3000/tweets/4 HTTP/1.1
 ###
 POST http://localhost:3000/tweets HTTP/1.1
 content-type: application/json
 
 {
-    "message": "Quinto tweet de la noche"
+    "message": "Tweet con usuario", 
+    "user": {
+        "name": "Marco",
+        "username": "marcomania",
+        "email": "marco.untiveros@gmail.com",
+        "password": "myweakpassword"
+    }
 }
 ###
 PATCH http://localhost:3000/tweets/4 HTTP/1.1

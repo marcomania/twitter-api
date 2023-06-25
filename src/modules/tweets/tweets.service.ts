@@ -3,46 +3,45 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Tweet } from './tweet.entity';
-import { CreateTweetDto, UpdateTweetDto } from './dto';
-
-
+import { User } from '../users/entities';
+import { CreateTweetDto, PaginationQueryDTO, UpdateTweetDto } from './dto';
 
 @Injectable()
 export class TweetsService {
     constructor(
         @InjectRepository(Tweet)
-        private readonly tweetRepository: Repository<Tweet> ){
+        private readonly tweetRepository: Repository<Tweet>, 
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>){
 
     }
 
-    async getTweets(): Promise<Tweet[]> {
-        return this.tweetRepository.find();
+    async getTweets({limit,offset}: PaginationQueryDTO): Promise<Tweet[]> {
+        return this.tweetRepository.find({relations: ['user'], skip: offset, take: limit});
     }
 
 
     async getTweet(id: number): Promise<Tweet> {
-        const tweet: Tweet  = await this.tweetRepository.findOne({where: {id}});
+        const tweet: Tweet  = await this.tweetRepository.findOne({where: {id},relations: ['user']});
         if(!tweet){
             throw new NotFoundException("Resource not found");
         }
         return tweet;
     }
 
-    async createTweet({message}: CreateTweetDto){
-        const tweet: Tweet = this.tweetRepository.create({message});
+    async createTweet({message, user}: CreateTweetDto){
+        const tweet: Tweet = this.tweetRepository.create({message, user});
 
         return this.tweetRepository.save(tweet); 
     }
 
     async updateTweet(id: number, {message}: UpdateTweetDto): Promise<Tweet>{
-        //const tweet = await this.tweetRepository.update({id: id}, {message: message})
-
-        await this.tweetRepository.update(id, {message});
         const tweet: Tweet = await this.tweetRepository.findOne({ where: { id } });
-
         if(!tweet){
             throw new NotFoundException("This tweet dont exist");
         }
+
+        await this.tweetRepository.update(id, {message});
 
         return tweet; 
     }
